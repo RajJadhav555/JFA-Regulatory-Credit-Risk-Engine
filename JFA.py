@@ -8,6 +8,7 @@ principal = float(input("Enter the Principal Amount: "))
 rate = float(input("Enter the Rate of Interest: "))
 time = float(input("Enter the Time Period in Years: "))
 income = float(input("Enter Borrower's Monthly Income: "))
+cibil = int(input("Enter Borrower's CIBIL Score (300 - 900): "))
 os.system('clear')
 
 print("Principal: ", principal)
@@ -42,12 +43,22 @@ emi = calculate_emi(principal, rate, time)
 
 emi_ratio = round((emi / income) * 100, 2)
 print("\n---- CREDIT RISK & APPROVAL STATUS ----")
-print("Borrower's Monthly Income: ₹", income)
-print("EMI burden on Income: ", emi_ratio, "%")
-if emi_ratio > 50:
-    print("STATUS: ❌ LOAN REJECTED (High Risk - EMI is more than 50% of income)")
+print(f"Borrower's Monthly Income: ₹ {income:,.2f}")
+print(f"CIBIL Score              : {cibil}")
+print(f"EMI burden on Income      : {emi_ratio} %")
+
+if cibil < 650:
+        approval_status = "REJECTED (Credit Default Risk - CIBIL below 650)"
+        print(f"STATUS: ❌ {approval_status}")
+elif emi_ratio > 50:
+        approval_status = "REJECTED (High Debt Burden - EMI exceeds 50% of income)"
+        print(f"STATUS: ❌ {approval_status}")
+elif cibil >= 750:
+        approval_status = "APPROVED (Prime Borrower - Clean Track Record)"
+        print(f"STATUS: ✅ {approval_status}")
 else:
-    print("STATUS: ✅ LOAN APPROVED (Low Risk - Borrower has repayment capacity)")
+        approval_status = "CONDITIONAL APPROVAL (Moderate Risk - Requires Guarantor)"
+        print(f"STATUS: ⚠️ {approval_status}")
 
 
 total_paid = round(emi * time * 12, 2)
@@ -95,7 +106,8 @@ if save_choice.lower() == 'y':
         f.write(f"Tenure                 : {time} Years ({total_months} Months)\n")
         f.write(f"Monthly EMI            : ₹ {emi:,.2f}\n")
         f.write(f"Net Disbursed Amount   : ₹ {net_disbursed:,.2f}\n")
-        f.write(f"Credit Approval Status : {'APPROVED' if emi_ratio <= 50 else 'REJECTED'}\n\n")
+        f.write(f"Borrower CIBIL Score   : {cibil}\n")
+        f.write(f"Credit Approval Status : {approval_status}\n\n")
         f.write("-----------------------------------------------------------------\n")
         f.write(" Month |    EMI (₹) | Interest (₹) | Principal (₹) |   Balance (₹)\n")
         f.write("-------+------------+--------------+---------------+--------------\n")

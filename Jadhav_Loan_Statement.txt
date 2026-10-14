@@ -7,7 +7,8 @@ Annual Interest Rate   : 9.0 %
 Tenure                 : 1.0 Years (12 Months)
 Monthly EMI            : ₹ 8,745.15
 Net Disbursed Amount   : ₹ 98,820.00
-Credit Approval Status : APPROVED
+Borrower CIBIL Score   : 6500
+Credit Approval Status : APPROVED (Prime Borrower - Clean Track Record)
 
 -----------------------------------------------------------------
  Month |    EMI (₹) | Interest (₹) | Principal (₹) |   Balance (₹)
