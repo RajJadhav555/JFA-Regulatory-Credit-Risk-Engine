@@ -33,3 +33,7 @@
 
 7. **45-MINUTE DAILY ADMIN BOX**:
    - Respect cognitive fatigue. Stop when the brain reaches capacity.
+
+8. **NO AUTOMATED GIT COMMITS BY AI (RAJ OWNS GIT & THE TERMINAL)**:
+   - The assistant must NEVER run `git commit` or `git add` in the terminal.
+   - Raj executes all Git commands himself in his terminal to build real muscle memory and Git mastery.
