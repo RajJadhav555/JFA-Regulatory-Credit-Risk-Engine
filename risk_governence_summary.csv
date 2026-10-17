@@ -1,0 +1,4 @@
+Risk_Tier,Total_Capital,Avg_CIBIL,Avg_FOIR,Borrower_count,Capital_Share_%
+Tier 1: Prime,3000000,795.0,29.0,2,43.8
+Tier 2: Near-Prime,1150000,705.0,67.41,2,16.79
+Tier 3: Sub-Prime,2700000,600.0,60.12,2,39.42
