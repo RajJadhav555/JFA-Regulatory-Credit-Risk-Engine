@@ -4,7 +4,8 @@ import pandas as pd
 st.set_page_config(page_title="Jadhav Financial Analytics", layout="wide")
 st.title("Jadhav Financial Analytics: Credit Risk Dashboard")
 
-df = pd.read_csv("master_risk_ledger.csv")
+from JFA_database import load_portfolio
+df = load_portfolio()
 status_filter = st.sidebar.radio("Filter by Decision", ["ALL", "APPROVED", "REJECTED"])
 
 if status_filter != "ALL":
