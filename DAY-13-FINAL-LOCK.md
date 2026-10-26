@@ -7,6 +7,7 @@
 - [`app.py`](file:///media/raaj-jadhav/HDD/files/Jadhav/app.py) (74 lines)
 - `jfa_risk.db` (SQLite Database)
 **Framework Deployed:** Python `sqlite3`, Pandas, Streamlit  
+**Authentic Git Commit:** `8d2fd0f`  
 
 ---
 

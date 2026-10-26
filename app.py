@@ -4,7 +4,7 @@ import pandas as pd
 st.set_page_config(page_title="Jadhav Financial Analytics", layout="wide")
 st.title("Jadhav Financial Analytics: Credit Risk Dashboard")
 
-from JFA_database import load_portfolio
+from JFA_database import load_portfolio, underwrite_applicant
 df = load_portfolio()
 status_filter = st.sidebar.radio("Filter by Decision", ["ALL", "APPROVED", "REJECTED"])
 
@@ -27,6 +27,22 @@ k4.metric("Approval Rate", f"{approval_rate:.1f}%")
 st.sidebar.header("Macro Risk Simulation")
 shock_bps = st.sidebar.slider("Rate Shock (Basis Points)", 0, 500, 300, 50)
 st.sidebar.info(f"simulating **+{shock_bps} bps** RBNZ Macro Stress Scenario")
+
+st.sidebar.header("📝 New Loan Application Intake")
+with st.sidebar.form("intake_form"):
+    new_name = st.text_input("Applicant Name", "Raj Jadhav")
+    new_principal = st.number_input("Loan Amount", min_value=10000, max_value=10000000, value=500000, step=50000)
+    new_rate = st.number_input("Interest Rate (%)", min_value=1.0, max_value=30.0, value=10.5, step=0.25)
+    new_tenure = st.number_input("Tenure (Years)", min_value=1, max_value=30, value=3, step=1)
+    new_income = st.number_input("Monthly Income", min_value=5000, max_value=5000000, value=75000, step=5000)
+    new_cibil = st.number_input("CIBIL Score", min_value=300, max_value=900, value=780, step=10)
+    submit_btn = st.form_submit_button("⚡ Underwrite & Commit to SQL")
+
+if submit_btn:
+    decision_result = underwrite_applicant(new_name, new_principal, new_rate, new_tenure, new_income, new_cibil)
+    st.sidebar.success(f"Underwritten: {decision_result}")
+    st.rerun()
+
 
 shock_pct = shock_bps / 100.0
 r = (df["Rate"] + shock_pct) / (12 * 100)
