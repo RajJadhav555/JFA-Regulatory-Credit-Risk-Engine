@@ -1,17 +1,19 @@
 import streamlit as st
 import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 st.set_page_config(page_title="Jadhav Financial Analytics", layout="wide")
 st.title("Jadhav Financial Analytics: Credit Risk Dashboard")
+filter_options = ["🌐 ALL PORTFOLIO", "✅ APPROVED BOOK", "❌ REJECTED COHORT"]
+selected_scope = st.radio("Portfolio Scope Lens", filter_options, horizontal=True)
+status_filter = "APPROVED" if "APPROVED" in selected_scope else ("REJECTED" if "REJECTED" in selected_scope else "ALL")
+
 
 from JFA_database import load_portfolio, underwrite_applicant
 df = load_portfolio()
-status_filter = st.sidebar.radio("Filter by Decision", ["ALL", "APPROVED", "REJECTED"])
 
-if status_filter != "ALL":
-    filtered_df = df[df["Decision"].str.contains(status_filter)]
-else: 
-    filtered_df = df
+
 
 approved_cap = df[df["Decision"].str.contains("APPROVED")]["Principal"].sum()
 rejected_cap = df[df["Decision"].str.contains("REJECTED")]["Principal"].sum()
@@ -49,17 +51,21 @@ r = (df["Rate"] + shock_pct) / (12 * 100)
 n = df["Tenure_Years"] * 12
 df["Simulated_EMI"] = round(df["Principal"] * r * ((1 + r)**n) / (((1 + r)**n) - 1), 2)
 df["Simulated_FOIR_%"] = round((df["Simulated_EMI"] / df["Monthly_Income"]) * 100, 2)
-
+filtered_df = df[df["Decision"].str.contains(status_filter)] if status_filter != "ALL" else df
 col_left, col_right = st.columns([1.1, 1])
 
 with col_left:
     st.subheader("Executive Risk Heatmap Matrix")
-    st.image("master_risk_heatmap.png", use_container_width=True)
+    fig, ax = plt.subplots(figsize =(6, 4))
+    matrix = filtered_df.pivot_table(index="Decision", columns="PD", values="Expected_Loss", aggfunc="sum", fill_value=0)
+    sns.heatmap(matrix, annot=True, fmt=",.0f", cmap="YlOrRd", ax=ax, cbar=False)
+    plt.tight_layout()
+    st.pyplot(fig)
 
 with col_right:
     st.subheader("Individual Applicant Drill-Down")
-    selected_applicant = st.selectbox("Select Borrower for Audit", df["Name"].unique())
-    borrower = df[df["Name"] == selected_applicant].iloc[0]
+    selected_applicant = st.selectbox("Select Borrower for Audit", filtered_df["Name"].unique())
+    borrower = filtered_df[filtered_df["Name"] == selected_applicant].iloc[0]
 
     b_col1, b_col2, b_col3 = st.columns(3)
     b_col1.metric("Monthly Income", f"INR  {borrower['Monthly_Income']:,.0f}")
