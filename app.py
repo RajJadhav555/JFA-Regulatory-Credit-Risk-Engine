@@ -10,7 +10,7 @@ selected_scope = st.radio("Portfolio Scope Lens", filter_options, horizontal=Tru
 status_filter = "APPROVED" if "APPROVED" in selected_scope else ("REJECTED" if "REJECTED" in selected_scope else "ALL")
 
 
-from JFA_database import load_portfolio, underwrite_applicant
+from JFA_database import load_portfolio, underwrite_applicant, calculate_car
 df = load_portfolio()
 
 
@@ -25,6 +25,31 @@ k1.metric("Approved Capital", f"INR {approved_cap:,.0f}")
 k2.metric("Intercepted Risk", f"INR {rejected_cap:,.0f}")
 k3.metric("Mandatory Basel Provision", f"INR {loss_reserved:,.0f}")
 k4.metric("Approval Rate", f"{approval_rate:.1f}%")
+
+st.sidebar.header("🏦Capital Adequacy Test")
+sim_tier1 = st.sidebar.slider("Tier-1 Bank Capital (INR)", 50000, 10000000, 5000000, 50000)
+bank_targets = {
+        "🏛️ RBNZ Statutory (8.0%)": 8.0,
+        "🔵 ANZ New Zealand (12.5%)": 12.5,
+        "🟡 ASB Bank (12.0%)": 12.0,
+        "🔴 BNZ Bank (11.5%)": 11.5,
+        "🔴 Westpac NZ (12.0%)": 12.0
+    }
+selected_bank = st.sidebar.selectbox("Bank Capital Target Lens", list(bank_targets.keys()))
+target_floor = bank_targets[selected_bank]
+
+car_data = calculate_car(tier1_capital=sim_tier1)
+c1, c2, c3, c4 = st.columns(4)
+c1.metric("🏦 Tier-1 Capital", f"INR {car_data['tier1']:,.0f}")
+c2.metric("⚖️ Risk-Weighted Assets", f"INR {car_data['total_rwa']:,.0f}")
+c3.metric("🛡️ CAR %", f"{car_data['car_pct']:.1f}%")
+if car_data["car_pct"] < target_floor:
+    shortfall = round(sim_tier1 - ((target_floor / 100.0) * car_data["total_rwa"]), 2)
+    c4.metric(f"🚨 {selected_bank.split()[1]} SHORTFALL", f"INR {shortfall:,.0f}", delta=f"{car_data['car_pct'] - target_floor:.1f}% Below Target", delta_color="inverse")
+elif car_data["car_pct"] < target_floor + 2.0:
+    c4.metric("⚠️ Buffer Warning", f"INR {car_data['headroom']:,.0f}", delta="Close to Target", delta_color="off")
+else:
+    c4.metric(f"💚 {selected_bank.split()[1]} Compliant", f"INR {car_data['headroom']:,.0f}", delta=f"+{car_data['car_pct'] - target_floor:.1f}% Headroom")
 
 st.sidebar.header("Macro Risk Simulation")
 shock_bps = st.sidebar.slider("Rate Shock (Basis Points)", 0, 500, 300, 50)

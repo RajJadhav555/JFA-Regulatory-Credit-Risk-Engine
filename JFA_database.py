@@ -54,8 +54,19 @@ def underwrite_applicant(name, principal, rate, tenure_years, monthly_income, ci
 
     with sqlite3.connect(DB_NAME) as conn:
         pd.DataFrame([new_data]).to_sql("portfolio_ledger", conn, if_exists="append", index=False)
-
     return decision
+
+def calculate_car(tier1_capital=5000000):
+    df = load_portfolio()
+    approved = df[df["Decision"].str.contains("APPROVED")]
+    risk_weights = {0.02: 0.50, 0.05: 1.00, 0.12: 1.50}
+    approved["RWA"] = approved["Principal"] * approved["PD"].map(risk_weights).fillna(2.0)
+    total_rwa = round(approved["RWA"].sum(), 2)
+    car_pct = round((tier1_capital / total_rwa) * 100, 2) if total_rwa > 0 else 0
+    headroom = round(tier1_capital - (0.08 * total_rwa), 2)
+    return{"total_rwa": total_rwa, "car_pct": car_pct, "headroom": headroom, "tier1": tier1_capital}
+
+
 if __name__ == "__main__":
     init_db()
     test_df = load_portfolio()

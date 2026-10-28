@@ -6,7 +6,7 @@
 - [`app.py`](file:///media/raaj-jadhav/HDD/files/Jadhav/app.py) (92 lines)
 - `jfa_risk.db` (SQLite Relational Database)
 **Framework Deployed:** Python `sqlite3`, Pandas, Streamlit, Matplotlib, Seaborn  
-**Authentic Git Commit:** Pending Raj's Manual Execution  
+**Authentic Git Commit:** `96b401f`  
 
 ---
 
