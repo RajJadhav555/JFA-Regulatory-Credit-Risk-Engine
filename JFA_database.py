@@ -1,10 +1,12 @@
 import sqlite3
 import pandas as pd
+from pathlib import Path
 
-DB_NAME = "jfa_risk.db"
+BASE_DIR = Path(__file__).resolve().parent
+DB_NAME = str(BASE_DIR / "jfa_risk.db")
 
 def init_db():
-    df = pd.read_csv("master_risk_ledger.csv")
+    df = pd.read_csv(BASE_DIR / "master_risk_ledger.csv")
     with sqlite3.connect(DB_NAME) as conn:
         df.to_sql("portfolio_ledger", conn, if_exists="replace", index=False)
     print("Database Initialized portfolio_ledger table created successfully.")

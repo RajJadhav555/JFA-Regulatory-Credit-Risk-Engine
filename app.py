@@ -2,6 +2,9 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent
 
 st.set_page_config(page_title="Jadhav Financial Analytics", layout="wide")
 st.title("Jadhav Financial Analytics: Credit Risk Dashboard")
@@ -109,7 +112,7 @@ with col_right:
 
 
     with st.expander("📄 View Credit Committee Audit Memo"):
-        with open("credit_committee_memo.txt") as f:
+        with open(BASE_DIR / "credit_committee_memo.txt") as f:
             st.text(f.read()) 
 
 with st.expander("📋 View Complete Master Risk Ledger & Stress Scenarios"):
