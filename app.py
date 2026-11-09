@@ -24,13 +24,13 @@ loss_reserved = df[df["Decision"].str.contains("APPROVED")]["Expected_Loss"].sum
 approval_rate = (len(df[df["Decision"].str.contains("APPROVED")]) / len(df)) * 100
 
 k1, k2, k3, k4 = st.columns(4)
-k1.metric("Approved Capital", f"INR {approved_cap:,.0f}")
-k2.metric("Intercepted Risk", f"INR {rejected_cap:,.0f}")
-k3.metric("Mandatory Basel Provision", f"INR {loss_reserved:,.0f}")
+k1.metric("Approved Capital", f"${approved_cap:,.0f}")
+k2.metric("Intercepted Risk", f"${rejected_cap:,.0f}")
+k3.metric("Mandatory Basel Provision", f"${loss_reserved:,.0f}")
 k4.metric("Approval Rate", f"{approval_rate:.1f}%")
 
 st.sidebar.header("🏦Capital Adequacy Test")
-sim_tier1 = st.sidebar.slider("Tier-1 Bank Capital (INR)", 50000, 10000000, 5000000, 50000)
+sim_tier1 = st.sidebar.slider("Tier-1 Bank Capital (NZD $)", 50000, 10000000, 5000000, 50000)
 bank_targets = {
         "🏛️ RBNZ Statutory (8.0%)": 8.0,
         "🔵 ANZ New Zealand (12.5%)": 12.5,
@@ -43,16 +43,16 @@ target_floor = bank_targets[selected_bank]
 
 car_data = calculate_car(tier1_capital=sim_tier1)
 c1, c2, c3, c4 = st.columns(4)
-c1.metric("🏦 Tier-1 Capital", f"INR {car_data['tier1']:,.0f}")
-c2.metric("⚖️ Risk-Weighted Assets", f"INR {car_data['total_rwa']:,.0f}")
-c3.metric("🛡️ CAR %", f"{car_data['car_pct']:.1f}%")
+c1.metric("🏦 Tier-1 Capital", f"${car_data['tier1']:,.0f}")
+c2.metric("⚖️ Risk-Weighted Assets", f"${car_data['total_rwa']:,.0f}")
+c3.metric("📈 CAR %", f"{car_data['car_pct']:.1f}%")
 if car_data["car_pct"] < target_floor:
     shortfall = round(sim_tier1 - ((target_floor / 100.0) * car_data["total_rwa"]), 2)
-    c4.metric(f"🚨 {selected_bank.split()[1]} SHORTFALL", f"INR {shortfall:,.0f}", delta=f"{car_data['car_pct'] - target_floor:.1f}% Below Target", delta_color="inverse")
+    c4.metric(f"🚨 {selected_bank.split()[1]} SHORTFALL", f"${shortfall:,.0f}", delta=f"{car_data['car_pct'] - target_floor:.1f}% Below Target", delta_color="inverse")
 elif car_data["car_pct"] < target_floor + 2.0:
-    c4.metric("⚠️ Buffer Warning", f"INR {car_data['headroom']:,.0f}", delta="Close to Target", delta_color="off")
+    c4.metric("⚠️ Buffer Warning", f"${car_data['headroom']:,.0f}", delta="Close to Target", delta_color="off")
 else:
-    c4.metric(f"💚 {selected_bank.split()[1]} Compliant", f"INR {car_data['headroom']:,.0f}", delta=f"+{car_data['car_pct'] - target_floor:.1f}% Headroom")
+    c4.metric(f"💚 {selected_bank.split()[1]} Compliant", f"${car_data['headroom']:,.0f}", delta=f"+{car_data['car_pct'] - target_floor:.1f}% Headroom")
 
 st.sidebar.header("Macro Risk Simulation")
 shock_bps = st.sidebar.slider("Rate Shock (Basis Points)", 0, 500, 300, 50)
@@ -96,8 +96,8 @@ with col_right:
     borrower = filtered_df[filtered_df["Name"] == selected_applicant].iloc[0]
 
     b_col1, b_col2, b_col3 = st.columns(3)
-    b_col1.metric("Monthly Income", f"INR  {borrower['Monthly_Income']:,.0f}")
-    b_col2.metric("CIBIL Score", f"{int(borrower['CIBIL'])}")
+    b_col1.metric("Monthly Income", f"${borrower['Monthly_Income']:,.0f}")
+    b_col2.metric("Credit Score", f"{int(borrower['CIBIL'])}")
     b_col3.metric("Debt Ratio (FOIR)", f"{borrower['FOIR_%']:.1f}%")
 
     if "APPROVED" in borrower["Decision"]:
@@ -106,14 +106,14 @@ with col_right:
         st.error(f"Underwriting Decision: {borrower['Decision']}")
 
     s_col1, s_col2, s_col3 = st.columns(3)
-    s_col1.metric("Baseline Monthly EMI", f"INR {borrower['Monthly_EMI']:,.2f}")
-    s_col2.metric(f"Stressed EMI(+{shock_bps} bps)", f"INR {borrower['Simulated_EMI']:,.2f}")
-    s_col3.metric("Basel Expected Loss", f"INR {borrower['Expected_Loss']:,.0f}")
+    s_col1.metric("Baseline Monthly EMI", f"${borrower['Monthly_EMI']:,.2f}")
+    s_col2.metric(f"Stressed EMI(+{shock_bps} bps)", f"${borrower['Simulated_EMI']:,.2f}")
+    s_col3.metric("Basel Expected Loss", f"${borrower['Expected_Loss']:,.0f}")
 
 
     with st.expander("📄 View Credit Committee Audit Memo"):
-        with open(BASE_DIR / "credit_committee_memo.txt") as f:
-            st.text(f.read()) 
+            with open(BASE_DIR / "credit_committee_memo.txt") as f:
+                st.text(f.read()) 
 
 with st.expander("📋 View Complete Master Risk Ledger & Stress Scenarios"):
         st.subheader("Master Risk Ledger")

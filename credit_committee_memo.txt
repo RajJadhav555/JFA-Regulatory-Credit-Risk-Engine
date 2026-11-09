@@ -1,11 +1,10 @@
-
 ======================================================
-     EXECUTIVE CREDIT RISK MEMORANDUM (CREDIT COMMITTEE)
-======================================================
-1. CAPITAL EXPOSURE & APPROVAL:
-   - Total Approved: INR 3,000,000.00 (33.3% approval rate across 6 applicants).
-   - Capital Intercepted: INR 3,850,000.00 of high-risk applications rejected.
-2. BASEL II PROVISIONING & REGULATORY RESERVES:
-   - Mandatory Provisioning: INR 27,000.00 set aside for baseline expected loss.
-3. MACROECONOMIC STRESS RESILIENCE (+300 BPS):
-   - Resilience Rate: 2/2 approved loans fully absorbed shock.
+         EXECUTIVE CREDIT RISK MEMORANDUM (CREDIT COMMITTEE)
+    ======================================================
+    1. CAPITAL EXPOSURE & APPROVAL:
+       - Total Approved: $3,000,000.00 (33.3% approval rate across 6 applicants).
+       - Capital Intercepted: $3,850,000.00 of high-risk applications rejected.
+    2. BASEL II PROVISIONING & REGULATORY RESERVES:
+       - Mandatory Provisioning: $27,000.00 set aside for baseline expected loss.
+    3. MACROECONOMIC STRESS RESILIENCE (+300 BPS):
+       - Resilience Rate: 2/2 approved loans fully absorbed shock.
